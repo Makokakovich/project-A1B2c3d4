@@ -1,18 +1,7 @@
-"""
-Field classes for the Personal Assistant.
-
-Each field wraps a single value and provides validation.
-Inherit from Field for any new field type.
-"""
-
-# TODO (Colleague 1): Implement all classes below.
-# Each class must raise ValueError with a clear message on invalid input.
-# Use validate_phone() and validate_email() from src/utils/validators.py
-
+from datetime import datetime
+from src.utils.validators import validate_phone, validate_email
 
 class Field:
-    """Base class for record fields."""
-
     def __init__(self, value: str) -> None:
         self.value = value
 
@@ -24,42 +13,40 @@ class Field:
 
 
 class Name(Field):
-    """Contact name. Required, cannot be empty."""
-
     def __init__(self, value: str) -> None:
-        # TODO: raise ValueError if value is blank
-        super().__init__(value)
+        if not value or not value.strip():
+            raise ValueError("Name is required and cannot be blank.")
+        super().__init__(value.strip())
 
 
 class Phone(Field):
-    """Phone number. Must pass validate_phone() check."""
-
     def __init__(self, value: str) -> None:
-        # TODO: import validate_phone and raise ValueError if invalid
+        if not validate_phone(value):
+            raise ValueError("Invalid phone format. Must be 10-12 digits.")
         super().__init__(value)
 
 
 class Email(Field):
-    """Email address. Must pass validate_email() check."""
-
     def __init__(self, value: str) -> None:
-        # TODO: import validate_email and raise ValueError if invalid
+        if not validate_email(value):
+            raise ValueError("Invalid email format.")
         super().__init__(value)
 
 
 class Birthday(Field):
-    """Birthday stored as datetime.date. Input format: DD.MM.YYYY"""
-
     def __init__(self, value: str) -> None:
-        # TODO: parse value with strptime("%d.%m.%Y")
-        # Store as self.value = date object (not string)
-        # Raise ValueError with helpful message on bad format
-        super().__init__(value)
+        try:
+            # Парсимо рядок і зберігаємо як об'єкт date
+            self.value = datetime.strptime(value, "%d.%m.%Y").date()
+        except ValueError:
+            raise ValueError("Birthday must be in DD.MM.YYYY format.")
+
+    def __str__(self) -> str:
+        return self.value.strftime("%d.%m.%Y")
 
 
 class Address(Field):
-    """Free-text address field. Cannot be empty."""
-
     def __init__(self, value: str) -> None:
-        # TODO: raise ValueError if value is blank
-        super().__init__(value)
+        if not value or not value.strip():
+            raise ValueError("Address cannot be empty.")
+        super().__init__(value.strip())
