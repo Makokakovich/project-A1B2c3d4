@@ -1,18 +1,8 @@
-"""
-Record — one contact entry in the address book.
-
-Stores: name (required), phones (list), email, birthday, address.
-"""
-
-# TODO (Colleague 1): Implement all methods marked with TODO.
-
 from typing import Optional
+from datetime import date
 from .fields import Name, Phone, Email, Birthday, Address
 
-
 class Record:
-    """Represents a single contact."""
-
     def __init__(self, name: str) -> None:
         self.name = Name(name)
         self.phones: list[Phone] = []
@@ -20,49 +10,55 @@ class Record:
         self.birthday: Optional[Birthday] = None
         self.address: Optional[Address] = None
 
-    # --- phones ---
-
     def add_phone(self, phone: str) -> None:
-        """Add a phone number. Raises ValueError if already exists or invalid."""
-        # TODO: check for duplicates, then append Phone(phone)
-        raise NotImplementedError
+        if self.find_phone(phone):
+            raise ValueError(f"Phone {phone} already exists.")
+        self.phones.append(Phone(phone))
 
     def edit_phone(self, old_phone: str, new_phone: str) -> None:
-        """Replace old_phone with new_phone. Raises ValueError if not found."""
-        # TODO: find Phone by value, replace it
-        raise NotImplementedError
+        found = False
+        for i, p in enumerate(self.phones):
+            if p.value == old_phone:
+                self.phones[i] = Phone(new_phone)
+                found = True
+                break
+        if not found:
+            raise ValueError(f"Phone {old_phone} not found.")
 
     def remove_phone(self, phone: str) -> None:
-        """Remove phone by value. Raises ValueError if not found."""
-        # TODO: remove matching Phone object
-        raise NotImplementedError
+        phone_obj = self.find_phone(phone)
+        if not phone_obj:
+            raise ValueError(f"Phone {phone} not found.")
+        self.phones.remove(phone_obj)
 
     def find_phone(self, phone: str) -> Optional[Phone]:
-        """Return Phone object or None."""
-        # TODO: return matching Phone or None
-        raise NotImplementedError
-
-    # --- other fields ---
+        for p in self.phones:
+            if p.value == phone:
+                return p
+        return None
 
     def add_email(self, email: str) -> None:
-        """Set email. Raises ValueError if invalid."""
-        # TODO: self.email = Email(email)
-        raise NotImplementedError
+        self.email = Email(email)
 
     def add_birthday(self, birthday: str) -> None:
-        """Set birthday. Raises ValueError if format is wrong (DD.MM.YYYY)."""
-        # TODO: self.birthday = Birthday(birthday)
-        raise NotImplementedError
+        self.birthday = Birthday(birthday)
 
     def add_address(self, address: str) -> None:
-        """Set address."""
-        # TODO: self.address = Address(address)
-        raise NotImplementedError
+        self.address = Address(address)
 
     def days_to_birthday(self) -> Optional[int]:
-        """Return number of days until next birthday, or None if not set."""
-        # TODO: calculate using date.today()
-        raise NotImplementedError
+        if not self.birthday:
+            return None
+        
+        today = date.today()
+        # self.birthday.value вже є об'єктом date завдяки реалізації у fields.py
+        bday = self.birthday.value
+        next_bday = bday.replace(year=today.year)
+        
+        if next_bday < today:
+            next_bday = bday.replace(year=today.year + 1)
+            
+        return (next_bday - today).days
 
     def __str__(self) -> str:
         phones = ", ".join(str(p) for p in self.phones) or "—"
