@@ -13,7 +13,7 @@ def add_note(args: list[str], notes: NotesBook) -> str:
     args[0] = title, args[1:] joined = content
     """
     if len(args) < 2:
-        return "Enter note title and content."
+        return "Введіть назву і текст нотатки."
 
     title = args[0]
     content = " ".join(args[1:])
@@ -21,7 +21,7 @@ def add_note(args: list[str], notes: NotesBook) -> str:
     try:
         note = Note(title, content)
         notes.add_note(note)
-        return f"Note '{title}' added."
+        return f"Нотатку '{title}' додано."
     except ValueError as e:
         return str(e)
 
@@ -34,13 +34,13 @@ def show_all_notes(args: list[str], notes: NotesBook) -> str:
 def find_note(args: list[str], notes: NotesBook) -> str:
     """Usage: find-note <query>"""
     if not args:
-        return "Enter query for note search."
+        return "Введіть запит для пошуку."
 
     query = " ".join(args)
     results = notes.search(query)
 
     if not results:
-        return "No notes found."
+        return "Нотаток не знайдено."
 
     return "\n".join(str(note) for note in results)
 
@@ -51,7 +51,7 @@ def edit_note(args: list[str], notes: NotesBook) -> str:
     Replace content of the note with given title.
     """
     if len(args) < 2:
-        return "Enter note title and new content."
+        return "Введіть назву нотатки і новий текст."
 
     title = args[0]
     new_content = " ".join(args[1:])
@@ -59,7 +59,7 @@ def edit_note(args: list[str], notes: NotesBook) -> str:
     try:
         note = notes.find(title)
         note.edit_content(new_content)
-        return f"Note '{title}' updated."
+        return f"Нотатку '{title}' оновлено."
     except (KeyError, ValueError) as e:
         return str(e)
 
@@ -67,13 +67,13 @@ def edit_note(args: list[str], notes: NotesBook) -> str:
 def delete_note(args: list[str], notes: NotesBook) -> str:
     """Usage: delete-note <title>"""
     if not args:
-        return "Enter note title."
+        return "Введіть назву нотатки."
 
     title = args[0]
 
     try:
         notes.delete(title)
-        return f"Note '{title}' deleted."
+        return f"Нотатку '{title}' видалено."
     except KeyError as e:
         return str(e)
 
@@ -81,13 +81,13 @@ def delete_note(args: list[str], notes: NotesBook) -> str:
 def find_by_tag(args: list[str], notes: NotesBook) -> str:
     """Usage: tag <tag> — find notes by tag."""
     if not args:
-        return "Enter tag."
+        return "Введіть тег."
 
     tag = args[0]
 
     results = notes.find_by_tag(tag)
 
     if not results:
-        return f"No notes found with tag '{tag}'."
+        return f"Нотаток з тегом '{tag}' не знайдено."
 
     return "\n".join(str(note) for note in results)
