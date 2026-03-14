@@ -1,3 +1,7 @@
+import sys
+if sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 from src.models import AddressBook, Record
 from src.models import NotesBook, Note
 from src.handlers.contact_handlers import (
