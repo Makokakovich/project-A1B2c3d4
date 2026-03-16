@@ -48,10 +48,16 @@ class Record:
         if not self.birthday:
             return None
         today = date.today()
-        # self.birthday.value вже є обʼєктом date
-        bday = self.birthday.value.replace(year=today.year)
+        # обробляємо 29 лютого — у невисокосному році замінюємо на 1 березня
+        try:
+            bday = self.birthday.value.replace(year=today.year)
+        except ValueError:
+            bday = date(today.year, 3, 1)
         if bday < today:
-            bday = self.birthday.value.replace(year=today.year + 1)
+            try:
+                bday = self.birthday.value.replace(year=today.year + 1)
+            except ValueError:
+                bday = date(today.year + 1, 3, 1)
         return (bday - today).days
 
     def __str__(self) -> str:

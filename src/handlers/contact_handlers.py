@@ -10,6 +10,10 @@ def add_contact(args, book):
         record.add_phone(phone)
         return f"Телефон додано до контакту {name}."
     except KeyError:
+        pass
+    except ValueError as e:
+        return str(e)
+    try:
         record = Record(name)
         record.add_phone(phone)
         book.add_record(record)

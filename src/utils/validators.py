@@ -2,7 +2,9 @@ import re
 
 
 def validate_phone(phone: str) -> bool:
-    # прибираємо всі не-цифри і перевіряємо довжину
+    # + тільки на початку, далі цифри, пробіли, дефіси, дужки
+    if not re.match(r'^\+?[\d\s\-\(\)]+$', phone):
+        return False
     digits = re.sub(r"\D", "", phone)
     return 10 <= len(digits) <= 12
 

@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from src.utils.validators import validate_phone, validate_email
 
@@ -21,7 +22,8 @@ class Phone(Field):
     def __init__(self, value: str) -> None:
         if not validate_phone(value):
             raise ValueError("Невірний формат телефону. Має бути 10-12 цифр.")
-        super().__init__(value)
+        # зберігаємо тільки цифри
+        super().__init__(re.sub(r"\D", "", value))
 
 
 class Email(Field):
