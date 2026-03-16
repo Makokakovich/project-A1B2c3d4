@@ -1,4 +1,5 @@
 import sys
+import difflib
 if sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
 
@@ -10,7 +11,7 @@ from src.handlers.contact_handlers import (
 )
 from src.handlers.note_handlers import (
     add_note, show_all_notes, find_note,
-    edit_note, delete_note, find_by_tag,
+    edit_note, delete_note, find_by_tag, add_tag, sort_notes,
 )
 from src.utils.storage import save_data, load_data
 
@@ -42,7 +43,9 @@ def show_help():
     find-note <запит>                — пошук нотатки
     edit-note <назва> <новий текст>  — редагувати нотатку
     delete-note <назва>              — видалити нотатку
+    add-tag <назва> <тег>            — додати тег до нотатки
     tag <тег>                        — нотатки за тегом
+    sort-notes <тег>                 — сортування нотаток за тегом
 
   Інше:
     hello                            — привітання
@@ -125,8 +128,25 @@ def main():
         elif command == "tag":
             print(find_by_tag(args, notes))
 
+        elif command == "add-tag":
+            print(add_tag(args, notes))
+
+        elif command == "sort-notes":
+            print(sort_notes(args, notes))
+
         else:
-            print(f"Невідома команда '{command}'. Введіть help.")
+            # підказка найближчої команди
+            all_commands = [
+                "add", "change", "phone", "all", "find", "delete",
+                "add-birthday", "birthdays", "add-note", "notes",
+                "find-note", "edit-note", "delete-note", "add-tag",
+                "tag", "sort-notes", "hello", "help", "exit", "close",
+            ]
+            closest = difflib.get_close_matches(command, all_commands, n=1, cutoff=0.5)
+            if closest:
+                print(f"Невідома команда '{command}'. Можливо, ви мали на увазі: {closest[0]}?")
+            else:
+                print(f"Невідома команда '{command}'. Введіть help.")
 
 
 if __name__ == "__main__":

@@ -91,3 +91,25 @@ def find_by_tag(args: list[str], notes: NotesBook) -> str:
         return f"Нотаток з тегом '{tag}' не знайдено."
 
     return "\n".join(str(note) for note in results)
+
+
+def add_tag(args: list[str], notes: NotesBook) -> str:
+    if len(args) < 2:
+        return "Введіть назву нотатки і тег."
+    title, tag = args[0], args[1]
+    try:
+        note = notes.find(title)
+        note.add_tag(tag)
+        return f"Тег '{tag}' додано до нотатки '{title}'."
+    except (KeyError, ValueError) as e:
+        return str(e)
+
+
+def sort_notes(args: list[str], notes: NotesBook) -> str:
+    if not args:
+        return "Введіть тег для сортування."
+    tag = args[0]
+    result = notes.sort_by_tag(tag)
+    if not result:
+        return "Нотаток немає."
+    return "\n".join(str(note) for note in result)
