@@ -104,7 +104,6 @@ def get_session():
 
 def enable_cli_analyzer():
     """Активує автодоповнення команд по TAB з підказками"""
-    print("✓ Автодоповнення з підказками активовано")
     get_session()
     return True
 

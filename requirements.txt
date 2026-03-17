@@ -1,2 +1,3 @@
 prompt-toolkit>=3.0.43
+rich>=13.0.0
 # потрібна версія Python 3.10+

@@ -1,21 +1,27 @@
-import sys
-import difflib
-if sys.stdout.encoding.lower() != "utf-8":
-    sys.stdout.reconfigure(encoding="utf-8")
-
-from src.models import AddressBook, Record
-from src.models import NotesBook, Note
-from src.handlers.contact_handlers import (
-    add_contact, show_all_contacts, find_contact,
-    edit_contact, delete_contact, birthdays,
+from src.utils.ui import (
+    print_success, print_error, print_warning, print_info,
+    print_contacts, print_notes, print_help,
+    print_contact_details, print_note_details, print_birthdays,
+    print_birthday_added, confirm_action, get_input
 )
+from src.utils.cli_analyzer import enable_cli_analyzer, prompt_with_completion
+from src.utils.storage import save_data, load_data
 from src.handlers.note_handlers import (
     add_note, show_all_notes, find_note,
     edit_note, delete_note, find_by_tag, add_tag, sort_notes,
 )
-from src.utils.storage import save_data, load_data
+from src.handlers.contact_handlers import (
+    add_contact, show_all_contacts, find_contact,
+    edit_contact, delete_contact, birthdays,
+)
+from src.models import NotesBook, Note
+from src.models import AddressBook, Record
+import difflib
+import sys
 
-from src.utils.cli_analyzer import enable_cli_analyzer, prompt_with_completion
+
+if sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
 
 
 def parse_input(user_input):
@@ -58,14 +64,15 @@ def show_help():
 
 def main():
     book, notes = load_data()
-    print("Вітаю! Персональний помічник запущено. Введіть help для списку команд.")
+    # ВИПРАВЛЕНО: використовуємо кольорове привітання
+    print_info(
+        "Вітаю! Персональний помічник запущено. Введіть help для списку команд.")
 
     enable_cli_analyzer()
 
     print("\n Для автодоповнення натискай TAB")
 
     while True:
-        # ВИПРАВЛЕНО: використовуємо prompt_with_completion замість input
         user_input = prompt_with_completion(">> ").strip()
         if not user_input:
             continue
@@ -74,75 +81,79 @@ def main():
 
         if command in ("exit", "close"):
             save_data(book, notes)
-            print("Дані збережено. До побачення!")
+            # ВИПРАВЛЕНО: кольоровий вихід
+            print_success("Дані збережено. До побачення!")
             break
 
         elif command == "hello":
-            print("Чим можу допомогти?")
+            # ВИПРАВЛЕНО: кольорове привітання
+            print_info("Чим можу допомогти?")
 
         elif command == "help":
-            show_help()
+            # ВИПРАВЛЕНО: використовуємо гарну довідку з ui
+            print_help()  # замість show_help()
 
         # контакти
         elif command == "add":
-            print(add_contact(args, book))
+            # ЗМІНА: викликаємо функцію, вона сама виведе результат
+            add_contact(args, book)
 
         elif command == "change":
-            print(edit_contact(args, book))
+            edit_contact(args, book)
 
         elif command == "phone":
-            print(find_contact(args, book))
+            find_contact(args, book)
 
         elif command == "all":
-            print(show_all_contacts(args, book))
+            show_all_contacts(args, book)
 
         elif command == "find":
-            print(find_contact(args, book))
+            find_contact(args, book)
 
         elif command == "delete":
-            print(delete_contact(args, book))
+            delete_contact(args, book)
 
         elif command == "add-birthday":
             if len(args) < 2:
-                print("Введіть ім'я і дату (дд.мм.рррр)")
+                print_warning("Введіть ім'я і дату (дд.мм.рррр)")
             else:
                 try:
                     record = book.find(args[0])
                     record.add_birthday(args[1])
-                    print("День народження додано.")
+                    # ВИПРАВЛЕНО: кольорове повідомлення
+                    print_birthday_added(args[0])
                 except (KeyError, ValueError) as e:
-                    print(str(e))
+                    print_error(str(e))
 
         elif command == "birthdays":
-            print(birthdays(args, book))
+            birthdays(args, book)  # birthdays вже виводить сама
 
-        # нотатки
+        # нотатки - аналогічно
         elif command == "add-note":
-            print(add_note(args, notes))
+            add_note(args, notes)
 
         elif command == "notes":
-            print(show_all_notes(args, notes))
+            show_all_notes(args, notes)
 
         elif command == "find-note":
-            print(find_note(args, notes))
+            find_note(args, notes)
 
         elif command == "edit-note":
-            print(edit_note(args, notes))
+            edit_note(args, notes)
 
         elif command == "delete-note":
-            print(delete_note(args, notes))
+            delete_note(args, notes)
 
         elif command == "tag":
-            print(find_by_tag(args, notes))
+            find_by_tag(args, notes)
 
         elif command == "add-tag":
-            print(add_tag(args, notes))
+            add_tag(args, notes)
 
         elif command == "sort-notes":
-            print(sort_notes(args, notes))
+            sort_notes(args, notes)
 
         else:
-            # підказка найближчої команди
             all_commands = [
                 "add", "change", "phone", "all", "find", "delete",
                 "add-birthday", "birthdays", "add-note", "notes",
@@ -152,10 +163,12 @@ def main():
             closest = difflib.get_close_matches(
                 command, all_commands, n=1, cutoff=0.5)
             if closest:
-                print(
+                # ВИПРАВЛЕНО: жовте попередження
+                print_warning(
                     f"Невідома команда '{command}'. Можливо, ви мали на увазі: {closest[0]}?")
             else:
-                print(f"Невідома команда '{command}'. Введіть help.")
+                # ВИПРАВЛЕНО: червона помилка
+                print_error(f"Невідома команда '{command}'. Введіть help.")
 
 
 if __name__ == "__main__":
