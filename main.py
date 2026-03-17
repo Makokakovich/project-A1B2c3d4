@@ -15,6 +15,8 @@ from src.handlers.note_handlers import (
 )
 from src.utils.storage import save_data, load_data
 
+from src.utils.cli_analyzer import enable_cli_analyzer, prompt_with_completion
+
 
 def parse_input(user_input):
     parts = user_input.strip().split()
@@ -58,8 +60,13 @@ def main():
     book, notes = load_data()
     print("Вітаю! Персональний помічник запущено. Введіть help для списку команд.")
 
+    enable_cli_analyzer()
+
+    print("\n Для автодоповнення натискай TAB")
+
     while True:
-        user_input = input(">> ").strip()
+        # ВИПРАВЛЕНО: використовуємо prompt_with_completion замість input
+        user_input = prompt_with_completion(">> ").strip()
         if not user_input:
             continue
 
@@ -142,9 +149,11 @@ def main():
                 "find-note", "edit-note", "delete-note", "add-tag",
                 "tag", "sort-notes", "hello", "help", "exit", "close",
             ]
-            closest = difflib.get_close_matches(command, all_commands, n=1, cutoff=0.5)
+            closest = difflib.get_close_matches(
+                command, all_commands, n=1, cutoff=0.5)
             if closest:
-                print(f"Невідома команда '{command}'. Можливо, ви мали на увазі: {closest[0]}?")
+                print(
+                    f"Невідома команда '{command}'. Можливо, ви мали на увазі: {closest[0]}?")
             else:
                 print(f"Невідома команда '{command}'. Введіть help.")
 
