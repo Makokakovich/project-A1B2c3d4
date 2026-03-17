@@ -2,7 +2,7 @@ from src.utils.ui import (
     print_success, print_error, print_warning, print_info,
     print_contacts, print_notes, print_help,
     print_contact_details, print_note_details, print_birthdays,
-    print_birthday_added, confirm_action, get_input
+    print_birthday_added, confirm_action, get_input, console
 )
 from src.utils.cli_analyzer import enable_cli_analyzer, prompt_with_completion
 from src.utils.storage import save_data, load_data
@@ -18,6 +18,8 @@ from src.models import NotesBook, Note
 from src.models import AddressBook, Record
 import difflib
 import sys
+
+from src.utils.ui import console
 
 
 if sys.stdout.encoding.lower() != "utf-8":
@@ -64,13 +66,22 @@ def show_help():
 
 def main():
     book, notes = load_data()
-    # ВИПРАВЛЕНО: використовуємо кольорове привітання
-    print_info(
-        "Вітаю! Персональний помічник запущено. Введіть help для списку команд.")
+    # Вирівняний прямокутник
+    console.print(
+        "[bold cyan]╔════════════════════════════════════════╗[/bold cyan]")
+    console.print(
+        "[bold cyan]║  🌟 ВІТАЮ! ПЕРСОНАЛЬНИЙ ПОМІЧНИК       ║[/bold cyan]")
+    console.print(
+        "[bold cyan]║  ✅ Запущено успішно!                  ║[/bold cyan]")
+    console.print(
+        "[bold cyan]║  📋 Введіть [bold underline green]help[/bold underline green] для списку команд     ║[/bold cyan]")
+    console.print(
+        "[bold cyan]╚════════════════════════════════════════╝[/bold cyan]")
 
     enable_cli_analyzer()
 
-    print("\n Для автодоповнення натискай TAB")
+    console.print(
+        "\n[bold cyan]✨ Для автодоповнення натискай [bold yellow]TAB[/bold yellow] ✨[/bold cyan]")
 
     while True:
         user_input = prompt_with_completion(">> ").strip()

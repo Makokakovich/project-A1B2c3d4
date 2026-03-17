@@ -148,13 +148,32 @@ def birthdays(args, book):
 
     for result in results:
         if hasattr(result, 'name') and hasattr(result, 'birthday'):
-            name = result.name.value
-            date = result.birthday.value
-            days_left = result.days_to_birthday()
-            table.add_row(name, date, str(days_left))
+            # Якщо result це об'єкт Record
+            name = str(result.name.value) if hasattr(
+                result.name, 'value') else str(result.name)
+
+            # Отримуємо дату
+            if result.birthday:
+                if hasattr(result.birthday, 'value'):
+                    date = str(result.birthday.value)
+                else:
+                    date = str(result.birthday)
+            else:
+                date = "—"
+
+            # Отримуємо дні до
+            if hasattr(result, 'days_to_birthday'):
+                days_left = str(result.days_to_birthday())
+            else:
+                days_left = "?"
+
+            table.add_row(name, date, days_left)
+
         elif isinstance(result, tuple) and len(result) >= 3:
+            # Якщо result це кортеж (ім'я, дата, днів)
             table.add_row(str(result[0]), str(result[1]), str(result[2]))
         else:
+            # Якщо щось інше
             table.add_row(str(result), "", "")
 
     console.print(table)
