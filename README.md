@@ -12,6 +12,7 @@ Python 3.10 або новіший.
 ```bash
 git clone https://github.com/Makokakovich/project-A1B2c3d4.git
 cd project-A1B2c3d4
+pip install -r requirements.txt
 python main.py
 
 ## Команди
