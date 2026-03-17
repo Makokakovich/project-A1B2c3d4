@@ -13,7 +13,6 @@ Python 3.10 або новіший.
 git clone https://github.com/Makokakovich/project-A1B2c3d4.git
 cd project-A1B2c3d4
 python main.py
-```
 
 ## Команди
 
@@ -40,6 +39,8 @@ python main.py
 | `edit-note <назва> <новий текст>` | Редагувати нотатку |
 | `delete-note <назва>` | Видалити нотатку |
 | `tag <тег>` | Знайти нотатки за тегом |
+| `add-tag <нотатка> <тег>` | Додати тег до нотатки |
+
 
 ### Інше
 
@@ -53,9 +54,6 @@ python main.py
 
 Дані зберігаються автоматично при виході в `~/.personal_assistant/` і залишаються після перезапуску.
 
-## Структура проєкту
-
-```
 main.py                        # точка входу, головний цикл
 src/
   models/
@@ -70,7 +68,17 @@ src/
   utils/
     validators.py              # валідація телефону та email
     storage.py                 # збереження та завантаження даних (pickle)
+    cli_analyzer.py            # автодоповнення команд у терміналі (TAB)
+    ui.py                      # гарний кольоровий вивід (rich)
 ```
+Автодоповнення команд
+У програмі реалізовано інтелектуальне автодоповнення команд:
+
+Натискайте TAB під час введення команди
+
+Підказки показують доступні команди та їх формат
+
+Працює для всіх команд, включаючи команди з дефісами (add-birthday, add-note)
 
 ## Команда
 
@@ -78,5 +86,5 @@ src/
 |---------|------|--------|
 | **Maksym Karmazynovskyi** | Team Lead | архітектура проєкту, main.py, address_book, інтеграція модулів, code review |
 | **Vladyslav Krasnovskyi** | Scrum Master | note.py, notes_book.py, note_handlers.py, організація стендапів, Trello |
-| **Maksym Kryvenko** | Developer | fields.py, record.py |
+| **Maksym Kryvenko** | Developer | fields.py, record.py, cli_analyzer.py, ui.py
 | **Olga Dobrynina** | Developer | validators.py, storage.py, contact_handlers.py |
