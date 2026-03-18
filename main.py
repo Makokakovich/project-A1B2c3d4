@@ -26,7 +26,8 @@ if sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
 
 
-def parse_input(user_input):
+def parse_input(user_input: str) -> tuple[str, list[str]]:
+    """розбиває введений рядок на команду і список аргументів. при порожньому рядку — ('', [])."""
     parts = user_input.strip().split()
     if not parts:
         return "", []
@@ -34,6 +35,7 @@ def parse_input(user_input):
 
 
 def show_help():
+    """текстова довідка на випадок якщо rich не працює. зазвичай викликається print_help() з ui."""
     print("""
 Доступні команди:
 
@@ -65,6 +67,7 @@ def show_help():
 
 
 def main():
+    """точка входу. завантажує дані, запускає командний цикл, зберігає при виході."""
     book, notes = load_data()
     # Вирівняний прямокутник
     console.print(

@@ -1,17 +1,25 @@
+"""
+збереження і завантаження даних через pickle.
+
+файли лежать у ~/.personal_assistant/ — там де користувач точно має права.
+при першому запуску директорія створюється автоматично.
+"""
+
 import pickle
 from pathlib import Path
 
-# папка для збереження даних у домашній директорії користувача
 DATA_DIR = Path.home() / ".personal_assistant"
 CONTACTS_FILE = DATA_DIR / "address_book.pkl"
 NOTES_FILE = DATA_DIR / "notes_book.pkl"
 
 
-def _ensure_dir():
+def _ensure_dir() -> None:
+    """створює директорію для даних якщо ще не існує."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def save_data(address_book, notes_book):
+def save_data(address_book, notes_book) -> None:
+    """серіалізує адресну книгу і нотатки на диск."""
     _ensure_dir()
     with open(CONTACTS_FILE, "wb") as f:
         pickle.dump(address_book, f)
@@ -20,7 +28,12 @@ def save_data(address_book, notes_book):
 
 
 def load_data():
-    # імпорт тут щоб уникнути циклічних залежностей
+    """
+    завантажує і повертає (AddressBook, NotesBook) з диску.
+
+    якщо файлів ще нема — повертає порожні екземпляри.
+    імпорт всередині функції щоб не було циклічних залежностей.
+    """
     from src.models.address_book import AddressBook
     from src.models.notes_book import NotesBook
 
